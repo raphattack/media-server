@@ -2,4 +2,4 @@
 Overview of home media server setup, including architecture, workflow, and automation scripts.
 
 ## High-Level Architecture
-![High-Level Architecture](./blob/media_server.png)
+![High-Level Architecture](./blob/media_server.png | width=900)
