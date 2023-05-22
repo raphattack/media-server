@@ -1,4 +1,5 @@
 # media-server
 Overview of home media server setup, including architecture, workflow, and automation scripts.
 
-## Architecture
+## High-Level Architecture
+![High-Level Architecture](./blob/media_server.png)
