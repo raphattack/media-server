@@ -1,0 +1,14 @@
+[Unit]
+Description=/media mergerfs mount
+ConditionPathIsMountPoint=/temp
+Requires=dbx.service
+After=dbx.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/mergerfs /temp:/dbx /media -o rw,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=partial,dropcacheonclose=true
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

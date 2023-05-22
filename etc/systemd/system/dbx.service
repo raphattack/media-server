@@ -1,0 +1,34 @@
+[Unit]
+Description=/dbx rclone mount
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+User=root
+Environment=RCLONE_CONFIG=/home/raph/.config/rclone/rclone.conf
+RestartSec=5
+ExecStart=/usr/bin/rclone mount dbxcrypt: /dbx \
+    --allow-other \
+    --dir-cache-time 9999h \
+    --log-level INFO \
+    --log-file /var/log/rclone/dropbox.log \
+    --poll-interval 10s \
+    --umask 000 \
+    --rc \
+    --rc-addr 127.0.0.1:5573 \
+    --rc-no-auth \
+    --cache-dir=/transcode/dbx/Transcode/cache \
+    --vfs-cache-mode full \
+    --vfs-cache-max-size 600G \
+    --vfs-fast-fingerprint \
+    --vfs-write-back 1h \
+    --vfs-cache-max-age 9999h \
+    --tpslimit 12 \
+    --tpslimit-burst 0
+ExecStop=/bin/fusermount3 -uz /dbx
+ExecStartPost=/usr/bin/rclone rc vfs/refresh recursive=true --rc-addr 127.0.0.1:5573 _async=true
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

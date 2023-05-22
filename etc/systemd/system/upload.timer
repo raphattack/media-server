@@ -1,0 +1,9 @@
+[Unit]
+Description=upload /media to /dbx with rclone daily at 3AM
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+AccuracySec=1us
+
+[Install]
+WantedBy=timers.target
