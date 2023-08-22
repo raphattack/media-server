@@ -1,8 +1,5 @@
 #!/bin/bash
 
-RCLONE_CONFIG=/home/raph/.config/rclone/rclone.conf
-export RCLONE_CONFIG
-
 local_dir="/temp"
 remote_dir="dbxcrypt:"
 

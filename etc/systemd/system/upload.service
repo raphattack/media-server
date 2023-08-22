@@ -1,10 +1,11 @@
 [Unit]
-Description=upload /media to /dbx with rclone
+Description=move /temp to dbxcrypt with rclone
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=simple
+Environment=RCLONE_CONFIG=/home/raph/.config/rclone/rclone.conf
 ExecStart=/bin/bash /home/raph/scripts/upload.sh
 User=root
 
