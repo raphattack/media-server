@@ -25,7 +25,7 @@ Example directory structure:
     /media/Games
     /media/Movies
     /media/Pictures
-    /media/Games
+    /media/Shows
 
 Running the script with --base-dir /media will exclude these directories:
     /media/Games
