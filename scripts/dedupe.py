@@ -1,7 +1,6 @@
 import logging
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from glob import glob
 import os
 from typing import List
 
@@ -19,6 +18,21 @@ class Mode(Enum):
     DELETE = "delete"
 
 
+"""
+Directories to exclude.
+
+Example directory structure:
+    /media/Games
+    /media/Movies
+    /media/Pictures
+    /media/Games
+
+Running the script with --base-dir /media will exclude these directories:
+    /media/Games
+    /media/Pictures
+"""
+EXCLUDE = {"Games", "Pictures"}
+
 # global variables
 _total_space_saved = 0
 _mode = ""
@@ -32,8 +46,7 @@ def parse_args() -> Namespace:
         The base directory.
 
         Example:
-            /media/Movies
-            /media/Shows/*
+            /media
 
     -m, --mode
         The mode that the program will execute in.
@@ -46,6 +59,22 @@ def parse_args() -> Namespace:
     parser.add_argument("-b", "--base-dir", type=str, required=True)
     parser.add_argument("-m", "--mode", choices=[e.value for e in Mode], default="test")
     return parser.parse_args()
+
+
+def get_sub_dirs(base_dir: str):
+    """
+    Recursively walk through the base directory. If the subdirectory does not contain any other directories, it is the
+    lowest-level directory, so add it to the list.
+    :param base_dir: The base directory.
+    :return: The list of lowest-level subdirectories.
+    """
+    sub_dirs = list()
+    for root, dirs, files in os.walk(base_dir, topdown=True):
+        dirs[:] = [d for d in dirs if d not in EXCLUDE]
+
+        if not dirs:
+            sub_dirs.append(root)
+    return sub_dirs
 
 
 def get_files(sub_dir: str) -> List:
@@ -136,11 +165,11 @@ def main():
     global _mode
     _mode = args.mode
     base_dir = args.base_dir
-    sub_dirs = glob(f"{base_dir}/*/", recursive=True)
+    sub_dirs = get_sub_dirs(base_dir)
 
     for sub_dir in sub_dirs:
         files = get_files(sub_dir)
-        duplicates = find_duplicates(sub_dir[:-1], files)
+        duplicates = find_duplicates(sub_dir, files)
         delete_duplicates(duplicates)
     LOGGER.info(f"Total space saved: {round(_total_space_saved, 3)}GB")
 
